@@ -1,5 +1,8 @@
 {
   "conventionalCommits.scopes": [
     "docs"
-  ]
+  ],
+  "conventionalCommits.gitmoji": false,
+  "conventionalCommits.promptFooter": false,
+  "conventionalCommits.promptBody": false
 }
