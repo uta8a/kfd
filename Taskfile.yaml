@@ -10,3 +10,9 @@ tasks:
     cmds:
       - echo "{{.GREETING}}"
     silent: true
+  up:
+    cmds:
+      - docker compose -f ./misc/docker/compose.yml up --build
+  down:
+    cmds:
+      - docker compose -f ./misc/docker/compose.yml down
