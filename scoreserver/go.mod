@@ -1,4 +1,4 @@
-module kfd
+module github.com/uta8a/kfd/scoreserver
 
 go 1.19
 
