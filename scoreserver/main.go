@@ -76,6 +76,7 @@ func getHealthCheck(c echo.Context) error {
 func getDeepHealthCheck(c echo.Context) error {
 	_, err := sqlx.Connect("mysql", config.FormatDSN())
 	if err != nil {
+		c.Echo().Logger.Errorf("[get deep healthcheck] %v", err)
 		response := HealthCheckResponse{
 			Status:  http.StatusServiceUnavailable,
 			Message: "failed to get connection to db",
