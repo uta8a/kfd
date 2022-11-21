@@ -1,7 +1,8 @@
 {
   "conventionalCommits.scopes": [
     "docs",
-    "scoreserver"
+    "scoreserver",
+    "misc"
   ],
   "conventionalCommits.gitmoji": false,
   "conventionalCommits.promptFooter": false,
