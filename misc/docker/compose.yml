@@ -21,7 +21,6 @@ services:
     container_name: db
     volumes:
       - '../db/mysql:/var/lib/mysql'
-      - '../db/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf'
       - '../db/initdb.d:/docker-entrypoint-initdb.d'
     environment:
       - MYSQL_ROOT_PASSWORD=password
