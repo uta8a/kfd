@@ -1,0 +1,17 @@
+FROM golang:latest AS builder
+
+WORKDIR /app
+
+COPY ./scoreserver/go.mod ./
+COPY ./scoreserver/go.sum ./
+RUN go mod download
+
+COPY ./scoreserver /app
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -tags timetzdata -o ./kfd
+
+FROM scratch
+WORKDIR /app
+COPY --from=builder /app/kfd ./
+
+CMD ["/app/kfd"]

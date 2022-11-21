@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.scoreserver
+    ports:
+      - 3000:3000
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=kfd_db
+      - MYSQL_USER=kfd
+      - MYSQL_PASSWORD=password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kfd-net
+  db:
+    image: mariadb:latest
+    container_name: db
+    volumes:
+      - '../db/mysql:/var/lib/mysql'
+      - '../db/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf'
+      - '../db/initdb.d:/docker-entrypoint-initdb.d'
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=kfd_db
+      - MYSQL_USER=kfd
+      - MYSQL_PASSWORD=password
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: 'bash -c "echo > /dev/tcp/db/3306" || exit 1'
+      interval: 1s
+      timeout: 10s
+      retries: 3
+      start_period: 1s
+    networks:
+      - kfd-net
+networks:
+  kfd-net:
+    driver: bridge
