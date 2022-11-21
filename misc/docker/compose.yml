@@ -30,7 +30,7 @@ services:
     ports:
       - 3306:3306
     healthcheck:
-      test: 'bash -c "echo > /dev/tcp/db/3306" || exit 1'
+      test: mysqladmin --user $$MYSQL_USER -p$$MYSQL_PASSWORD --silent ping
       interval: 1s
       timeout: 10s
       retries: 3
