@@ -21,7 +21,6 @@ var (
 )
 
 type HealthCheckResponse struct {
-	Status  int    `json:"status"`
 	Message string `json:"message,omitempty"`
 	Detail  string `json:"detail,omitempty"`
 }
@@ -68,24 +67,21 @@ func main() {
 
 func getHealthCheck(c echo.Context) error {
 	response := HealthCheckResponse{
-		Status: http.StatusOK,
+		Message: "server is up",
 	}
 	return c.JSON(http.StatusOK, response)
 }
 
 func getDeepHealthCheck(c echo.Context) error {
-	_, err := sqlx.Connect("mysql", config.FormatDSN())
-	if err != nil {
+	if err := db.Ping(); err != nil {
 		c.Echo().Logger.Errorf("[get deep healthcheck] %v", err)
 		response := HealthCheckResponse{
-			Status:  http.StatusServiceUnavailable,
 			Message: "failed to get connection to db",
 			Detail:  err.Error(),
 		}
 		return c.JSON(http.StatusServiceUnavailable, response)
 	}
 	response := HealthCheckResponse{
-		Status:  http.StatusOK,
 		Message: "success to connect db",
 	}
 	return c.JSON(http.StatusOK, response)
