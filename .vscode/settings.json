@@ -2,7 +2,8 @@
   "conventionalCommits.scopes": [
     "docs",
     "scoreserver",
-    "misc"
+    "misc",
+    "webclient"
   ],
   "conventionalCommits.gitmoji": false,
   "conventionalCommits.promptFooter": false,
