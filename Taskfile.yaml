@@ -16,3 +16,6 @@ tasks:
   down:
     cmds:
       - docker compose -f ./misc/docker/compose.yml down
+  exec:
+    cmds:
+      - docker compose -f ./misc/docker/compose.yml exec db bash
