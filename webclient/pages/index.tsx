@@ -4,7 +4,11 @@ import { config } from '../constants/constants'
 import styles from '../styles/Home.module.css'
 import dayjs from 'dayjs'
 
-export default function Home() {
+type Props = {
+  period: string
+}
+
+export default function Home(props: Props) {
   return (
     <div className={styles.container}>
       <Head>
@@ -22,7 +26,7 @@ export default function Home() {
           {config.CTF_DESCRIPTION}
         </p>
         <p className={styles.description}>
-          {`${dayjs(config.CTF_START_TIME).format('YYYY/MM/DD HH:mm')} - ${dayjs(config.CTF_END_TIME).format('YYYY/MM/DD HH:mm')} (JST)`}
+          {props.period}
         </p>
         <p className={styles.description}>
           {config.CTF_RULE}
@@ -30,4 +34,13 @@ export default function Home() {
       </main>
     </div>
   )
+}
+
+export async function getStaticProps() {
+  const period = `${dayjs(config.CTF_START_TIME).format('YYYY/MM/DD HH:mm')} - ${dayjs(config.CTF_END_TIME).format('YYYY/MM/DD HH:mm')} (JST)`
+  return {
+    props: {
+      period
+    }
+  }
 }
