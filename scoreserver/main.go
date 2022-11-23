@@ -81,12 +81,12 @@ func main() {
 	store = _store
 
 	e.Use(session.Middleware(store))
-
+	api := e.Group("/api/v1")
 	// Path
-	e.GET("/.healthcheck", getHealthCheck)
-	e.GET("/.healthcheck/deep", getDeepHealthCheck)
-	e.GET("/players", getPlayers)
-	e.Start(":3000")
+	api.GET("/.healthcheck", getHealthCheck)
+	api.GET("/.healthcheck/deep", getDeepHealthCheck)
+	api.GET("/players", getPlayers)
+	e.Start(":4000")
 }
 
 func getHealthCheck(c echo.Context) error {
