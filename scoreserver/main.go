@@ -35,6 +35,10 @@ type PlayersResponse struct {
 	Players []Player `json:"players"`
 }
 
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 func main() {
 	e := echo.New()
 	e.Logger = lecho.New(os.Stdout)
@@ -81,7 +85,7 @@ func main() {
 	// Path
 	e.GET("/.healthcheck", getHealthCheck)
 	e.GET("/.healthcheck/deep", getDeepHealthCheck)
-	// e.GET("/players", getPlayers)
+	e.GET("/players", getPlayers)
 	e.Start(":3000")
 }
 
@@ -110,16 +114,36 @@ func getDeepHealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-// func getPlayers(c echo.Context) error {
-//   var players []Player
-//   players = make([]Player, 0)
-//   rows, err := db.Query("SELECT username, score FROM users WHERE role = 'player'")
-//   if err != nil {
-//     c.Echo().Logger.Errorf("")
-//     return c.JSON()
-//   }
-//   response := PlayersResponse {
-//     Players: ,
-//   }
-//   return c.JSON(http.StatusOK, response)
-// }
+func getPlayers(c echo.Context) error {
+	var players []Player
+	players = make([]Player, 0)
+	rows, err := db.Query("SELECT username, score FROM users WHERE role = 'player'")
+	if err != nil {
+		c.Echo().Logger.Errorj(log.JSON{
+			"message": "get all players info",
+			"detail":  err.Error(),
+		})
+		response := ErrorResponse{
+			Message: "cannot get players info",
+		}
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+	var p Player
+	for rows.Next() {
+		if err = rows.Scan(&p.Username, &p.Score); err != nil {
+			c.Echo().Logger.Errorj(log.JSON{
+				"message": "rows.Scan players",
+				"detail":  err.Error(),
+			})
+			response := ErrorResponse{
+				Message: "cannot get players info",
+			}
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+		players = append(players, p)
+	}
+	response := PlayersResponse{
+		Players: players,
+	}
+	return c.JSON(http.StatusOK, response)
+}
