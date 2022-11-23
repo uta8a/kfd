@@ -1,10 +1,21 @@
 services:
-  backend:
+  webclient:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.webclient
+    volumes:
+      - ../../webclient:/app
+    ports:
+      - 3000:3000
+    command: sh -c "npm run dev"
+    networks:
+      - kfd-net-front
+  scoreserver:
     build:
       context: ../../
       dockerfile: misc/docker/Dockerfile.scoreserver
     ports:
-      - 3000:3000
+      - 4000:4000
     environment:
       - MYSQL_HOST=db
       - MYSQL_PORT=3306
@@ -15,7 +26,8 @@ services:
       db:
         condition: service_healthy
     networks:
-      - kfd-net
+      - kfd-net-db
+      - kfd-net-front
   db:
     image: mariadb:latest
     container_name: db
@@ -36,7 +48,9 @@ services:
       retries: 3
       start_period: 1s
     networks:
-      - kfd-net
+      - kfd-net-db
 networks:
-  kfd-net:
+  kfd-net-db:
+    driver: bridge
+  kfd-net-front:
     driver: bridge
