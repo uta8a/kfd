@@ -1,0 +1,56 @@
+services:
+  webclient:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.webclient
+    volumes:
+      - ../../webclient:/app
+    ports:
+      - 3000:3000
+    command: sh -c "npm run dev"
+    networks:
+      - kfd-net-front
+  scoreserver:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.scoreserver
+    ports:
+      - 4000:4000
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=kfd_db
+      - MYSQL_USER=kfd
+      - MYSQL_PASSWORD=password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kfd-net-db
+      - kfd-net-front
+  db:
+    image: mariadb:latest
+    container_name: db
+    volumes:
+      # - '../db/mysql:/var/lib/mysql'
+      - '../db/initdb.d:/docker-entrypoint-initdb.d'
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=kfd_db
+      - MYSQL_USER=kfd
+      - MYSQL_PASSWORD=password
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: mysqladmin --user $$MYSQL_USER -p$$MYSQL_PASSWORD --silent ping
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 1s
+    networks:
+      - kfd-net-db
+networks:
+  kfd-net-db:
+    driver: bridge
+  kfd-net-front:
+    driver: bridge

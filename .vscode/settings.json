@@ -1,0 +1,11 @@
+{
+  "conventionalCommits.scopes": [
+    "docs",
+    "scoreserver",
+    "misc",
+    "webclient"
+  ],
+  "conventionalCommits.gitmoji": false,
+  "conventionalCommits.promptFooter": false,
+  "conventionalCommits.promptBody": false
+}
