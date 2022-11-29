@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `attachments`;
 CREATE TABLE `attachments` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(64) NOT NULL,
-  `url` VARCHAR(512) NOT NULL,
+  `key` VARCHAR(512) NOT NULL,
   `challenge_id` BIGINT NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`challenge_id`) REFERENCES `challenges` (`id`),
