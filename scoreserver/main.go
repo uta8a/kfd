@@ -27,8 +27,8 @@ type HealthCheckResponse struct {
 }
 
 type Player struct {
-	Username string `json:"username"`
-	Score    string `json:"score"`
+	Username string `json:"username" db:"username"`
+	Score    string `json:"score" db:"score"`
 }
 
 type PlayersResponse struct {
@@ -116,8 +116,7 @@ func getDeepHealthCheck(c echo.Context) error {
 
 func getPlayers(c echo.Context) error {
 	var players []Player
-	players = make([]Player, 0)
-	rows, err := db.Query("SELECT username, score FROM users WHERE role = 'player'")
+	err := db.Select(&players, "SELECT username, score FROM users WHERE role = 'player'")
 	if err != nil {
 		c.Echo().Logger.Errorj(log.JSON{
 			"message": "get all players info",
@@ -127,20 +126,6 @@ func getPlayers(c echo.Context) error {
 			Message: "cannot get players info",
 		}
 		return c.JSON(http.StatusInternalServerError, response)
-	}
-	var p Player
-	for rows.Next() {
-		if err = rows.Scan(&p.Username, &p.Score); err != nil {
-			c.Echo().Logger.Errorj(log.JSON{
-				"message": "rows.Scan players",
-				"detail":  err.Error(),
-			})
-			response := ErrorResponse{
-				Message: "cannot get players info",
-			}
-			return c.JSON(http.StatusInternalServerError, response)
-		}
-		players = append(players, p)
 	}
 	response := PlayersResponse{
 		Players: players,
