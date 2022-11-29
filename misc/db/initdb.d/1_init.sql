@@ -13,6 +13,7 @@ CREATE TABLE `users` (
 DROP TABLE IF EXISTS `challenges`;
 CREATE TABLE `challenges` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `slug` VARCHAR(64) NOT NULL,
   `title` VARCHAR(64) NOT NULL,
   `description` VARCHAR(512),
   `flag` VARCHAR(256) NOT NULL,
